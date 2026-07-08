@@ -85,13 +85,14 @@ export const modalApi = createApi({
 
     setActiveModal: builder.mutation<void, string | null>({
       queryFn: async (id) => {
-        const { error: e1 } = await supabase
-          .from(TABLE)
-          .update({ is_active: false })
-          .not('id', 'eq', id ?? 'none');
-        if (e1) return { error: e1.message };
-
         if (id) {
+          const { error: e1 } = await supabase
+            .from(TABLE)
+            .update({ is_active: false })
+            .neq('id', id);
+          if (e1) return { error: e1.message };
+
+          // Активируем выбранную
           const { error: e2 } = await supabase
             .from(TABLE)
             .update({ is_active: true })
@@ -108,6 +109,12 @@ export const modalApi = createApi({
           const writeError = await writeActiveModal(modal as Modal);
           if (writeError) return { error: writeError };
         } else {
+          const { error: e1 } = await supabase
+            .from(TABLE)
+            .update({ is_active: false })
+            .not('id', 'is', null);
+          if (e1) return { error: e1.message };
+
           const writeError = await writeActiveModal(null);
           if (writeError) return { error: writeError };
         }
