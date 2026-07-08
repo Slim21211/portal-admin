@@ -1,67 +1,69 @@
-import { useRef, useState } from 'react'
-import { useUploadBirthdayImageMutation } from '../../api/uploadApi'
-import { getBirthdayPublicUrl } from '../../api/supabaseClient'
-import styles from './UploadForm.module.css'
+import { useRef, useState } from 'react';
+import { useUploadBirthdayImageMutation } from '../../api/uploadApi';
+import { getBirthdayPublicUrl } from '../../api/supabaseClient';
+import styles from './UploadForm.module.css';
 
-const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg']
+const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg'];
 
 export function UploadForm() {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [file, setFile] = useState<File | null>(null)
-  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
 
-  const [upload, { isLoading, isError, error }] = useUploadBirthdayImageMutation()
+  const [upload, { isLoading, isError, error }] =
+    useUploadBirthdayImageMutation();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const selected = e.target.files?.[0]
-    if (!selected) return
+    const selected = e.target.files?.[0];
+    if (!selected) return;
 
     if (!ACCEPTED.includes(selected.type)) {
-      alert('Поддерживаются только PNG и JPG')
-      return
+      alert('Поддерживаются только PNG и JPG');
+      return;
     }
 
-    setFile(selected)
-    setPreview(URL.createObjectURL(selected))
-    setUploadedUrl(null)
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
+    setUploadedUrl(null);
   }
 
   async function handleUpload() {
-    if (!file) return
+    if (!file) return;
 
-    const result = await upload(file)
+    const result = await upload(file);
 
     if ('data' in result) {
       // добавляем cache buster чтобы браузер не показывал старую версию
-      const today = new Date().toISOString().split('T')[0]
-      setUploadedUrl(getBirthdayPublicUrl() + '?v=' + today)
-      setFile(null)
-      setPreview(null)
-      if (inputRef.current) inputRef.current.value = ''
+      const today = new Date().toISOString().split('T')[0];
+      setUploadedUrl(getBirthdayPublicUrl() + '?v=' + today);
+      setFile(null);
+      setPreview(null);
+      if (inputRef.current) inputRef.current.value = '';
     }
   }
 
   function handleDrop(e: React.DragEvent) {
-    e.preventDefault()
-    const dropped = e.dataTransfer.files[0]
-    if (!dropped) return
+    e.preventDefault();
+    const dropped = e.dataTransfer.files[0];
+    if (!dropped) return;
 
     if (!ACCEPTED.includes(dropped.type)) {
-      alert('Поддерживаются только PNG и JPG')
-      return
+      alert('Поддерживаются только PNG и JPG');
+      return;
     }
 
-    setFile(dropped)
-    setPreview(URL.createObjectURL(dropped))
-    setUploadedUrl(null)
+    setFile(dropped);
+    setPreview(URL.createObjectURL(dropped));
+    setUploadedUrl(null);
   }
 
   return (
     <div className={styles.card}>
-      <h2 className={styles.title}>Картинка с днём рождения</h2>
+      <h2 className={styles.title}>Картинка с днём рождения сотрудников</h2>
       <p className={styles.subtitle}>
-        Загрузи картинку — она автоматически появится на портале сегодня
+        Загрузи картинку для отображения на&nbsp;портале, название файла должно
+        быть&nbsp;&mdash; daily_birthday
       </p>
 
       <div
@@ -112,9 +114,13 @@ export function UploadForm() {
       {uploadedUrl && (
         <div className={styles.success}>
           <span>✓ Загружено успешно</span>
-          <img src={uploadedUrl} alt="Загруженная картинка" className={styles.uploaded} />
+          <img
+            src={uploadedUrl}
+            alt="Загруженная картинка"
+            className={styles.uploaded}
+          />
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,0 +1,304 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  max-width: 1100px;
+  width: 100%;
+  align-items: start;
+}
+
+/* ─── Форма ─── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 16px;
+}
+
+.sectionHeader .sectionTitle {
+  margin: 0;
+}
+
+/* ─── Поля ─── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #555;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field input,
+.field textarea {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #fe5000;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.optional {
+  color: #bbb;
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+/* ─── Тогглы типа ─── */
+.toggleRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.typeBtn {
+  flex: 1;
+  padding: 8px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.typeBtnActive {
+  border-color: #fe5000;
+  color: #fe5000;
+  background: #fff8f0;
+}
+
+/* ─── Палитра ─── */
+.colorPalette {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.colorDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s;
+  outline: none;
+}
+
+.colorDot:hover {
+  transform: scale(1.15);
+}
+
+.colorDotActive {
+  box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px #333;
+}
+
+/* ─── Чекбокс-лейбл ─── */
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* ─── Пресеты важного блока ─── */
+.presetRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.presetBtn {
+  padding: 6px 12px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.presetBtnActive {
+  font-weight: 600;
+}
+
+/* ─── Кнопки добавления/удаления ─── */
+.addBtn {
+  background: none;
+  border: 1.5px dashed #ccc;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #777;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.addBtn:hover {
+  border-color: #fe5000;
+  color: #fe5000;
+}
+
+.buttonCard {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.buttonCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.removeBtn:hover {
+  color: #d32f2f;
+}
+
+.charCount {
+  color: #bbb;
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #bbb;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ─── Кнопка копирования ─── */
+.copyBtn {
+  width: 100%;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.copyBtn:hover {
+  opacity: 0.85;
+}
+
+/* ─── Превью ─── */
+.previewCol {
+  position: sticky;
+  top: 24px;
+}
+
+.previewLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #777;
+  margin: 0 0 10px;
+}
+
+.fileInput {
+  font-size: 13px;
+  color: #555;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: #d32f2f;
+  margin-bottom: 8px;
+}
+
+.successMsg {
+  font-size: 13px;
+  color: #2e7d32;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.submitBtn {
+  width: 100%;
+  background: #FE5000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

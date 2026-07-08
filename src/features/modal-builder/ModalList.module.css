@@ -1,0 +1,155 @@
+.root {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  max-width: 860px;
+  width: 100%;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 20px;
+}
+
+.status {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  padding: 24px;
+}
+
+.statusError {
+  font-size: 14px;
+  color: #d32f2f;
+  padding: 12px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  transition: border-color 0.15s;
+}
+
+.itemActive {
+  border-color: #FE5000;
+  background: #fff8f5;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.itemName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activeBadge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #FE5000;
+  white-space: nowrap;
+}
+
+.itemDate {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.itemDesc {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnActivate {
+  background: #FE5000;
+  color: #fff;
+  border-color: #FE5000;
+}
+
+.btnActivate:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btnDeactivate {
+  background: #fff;
+  color: #FE5000;
+  border-color: #FE5000;
+}
+
+.btnDeactivate:hover:not(:disabled) {
+  background: #fff8f0;
+}
+
+.btnDelete {
+  background: #fff;
+  color: #999;
+  border-color: #e0e0e0;
+}
+
+.btnDelete:hover:not(:disabled) {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
