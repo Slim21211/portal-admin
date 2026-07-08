@@ -1,9 +1,14 @@
-import { useRef, useState } from 'react'
-import { ModalFormData, ModalButton } from './types'
-import { ACCENT_COLORS, IMPORTANT_PRESETS, MAX_BUTTON_TEXT, MAX_BUTTONS } from './constants'
-import { ModalPreview } from './ModalPreview'
-import { useCreateModalMutation } from '../../api/modalApi'
-import styles from './ModalBuilder.module.css'
+import { useRef, useState } from 'react';
+import { ModalFormData, ModalButton } from './types';
+import {
+  ACCENT_COLORS,
+  IMPORTANT_PRESETS,
+  MAX_BUTTON_TEXT,
+  MAX_BUTTONS,
+} from './constants';
+import { ModalPreview } from './ModalPreview';
+import { useCreateModalMutation } from '../../api/modalApi';
+import styles from './ModalBuilder.module.css';
 
 const emptyForm: ModalFormData = {
   name: '',
@@ -20,79 +25,94 @@ const emptyForm: ModalFormData = {
   important_preset: 'warning',
   buttons: [],
   accent_color: '#FE5000',
+};
+
+interface Props {
+  onSaved: () => void;
 }
 
-export function ModalBuilder() {
-  const [form, setForm] = useState<ModalFormData>(emptyForm)
-  const [previewUrl, setPreviewUrl] = useState<string>('')
-  const [imageSource, setImageSource] = useState<'file' | 'url'>('file')
-  const fileRef = useRef<HTMLInputElement>(null)
+export function ModalBuilder({ onSaved }: Props) {
+  const [form, setForm] = useState<ModalFormData>(emptyForm);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [imageSource, setImageSource] = useState<'file' | 'url'>('file');
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const [createModal, { isLoading, isSuccess, isError, error, reset }] =
-    useCreateModalMutation()
+    useCreateModalMutation();
 
   function set<K extends keyof ModalFormData>(key: K, value: ModalFormData[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }))
+    setForm((prev) => ({ ...prev, [key]: value }));
   }
 
   function addButton() {
-    if (form.buttons.length >= MAX_BUTTONS) return
-    const btn: ModalButton = { text: 'Перейти', url: '', style: 'outline' }
-    set('buttons', [...form.buttons, btn])
+    if (form.buttons.length >= MAX_BUTTONS) return;
+    const btn: ModalButton = { text: 'Перейти', url: '', style: 'outline' };
+    set('buttons', [...form.buttons, btn]);
   }
 
   function updateButton(i: number, field: keyof ModalButton, value: string) {
     set(
       'buttons',
-      form.buttons.map((b, idx) => (idx === i ? { ...b, [field]: value } : b)),
-    )
+      form.buttons.map((b, idx) => (idx === i ? { ...b, [field]: value } : b))
+    );
   }
 
   function removeButton(i: number) {
-    set('buttons', form.buttons.filter((_, idx) => idx !== i))
+    set(
+      'buttons',
+      form.buttons.filter((_, idx) => idx !== i)
+    );
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null
-    set('header_image_file', file)
+    const file = e.target.files?.[0] ?? null;
+    set('header_image_file', file);
     if (file) {
-      const url = URL.createObjectURL(file)
-      setPreviewUrl(url)
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
     } else {
-      setPreviewUrl('')
+      setPreviewUrl('');
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    reset()
-    await createModal(form)
-    setForm(emptyForm)
-    setPreviewUrl('')
-    if (fileRef.current) fileRef.current.value = ''
+    e.preventDefault();
+    reset();
+    const result = await createModal(form);
+    if ('data' in result) {
+      setForm(emptyForm);
+      setPreviewUrl('');
+      if (fileRef.current) fileRef.current.value = '';
+      onSaved(); // переключает на вкладку «Список»
+    }
   }
 
   // Для превью строим временный объект с нужными полями
   const previewConfig = {
     ...form,
-    header_image_url: imageSource === 'file' ? previewUrl : form.header_image_url,
-  }
+    header_image_url:
+      imageSource === 'file' ? previewUrl : form.header_image_url,
+  };
 
   const presetEntries = Object.entries(IMPORTANT_PRESETS) as [
     ModalFormData['important_preset'],
     (typeof IMPORTANT_PRESETS)[ModalFormData['important_preset']],
-  ][]
+  ][];
 
   return (
     <div className={styles.root}>
       {/* ─── ФОРМА ─── */}
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-
         {/* Название */}
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Название модалки</h3>
           <label className={styles.field}>
-            <span>Внутреннее название <span className={styles.optional}>только для вас, не показывается пользователям</span></span>
+            <span>
+              Внутреннее название{' '}
+              <span className={styles.optional}>
+                только для вас, не показывается пользователям
+              </span>
+            </span>
             <input
               type="text"
               value={form.name}
@@ -112,12 +132,16 @@ export function ModalBuilder() {
               type="button"
               className={`${styles.typeBtn} ${form.header_type === 'color' ? styles.typeBtnActive : ''}`}
               onClick={() => set('header_type', 'color')}
-            >Цвет + текст</button>
+            >
+              Цвет + текст
+            </button>
             <button
               type="button"
               className={`${styles.typeBtn} ${form.header_type === 'image' ? styles.typeBtnActive : ''}`}
               onClick={() => set('header_type', 'image')}
-            >Картинка</button>
+            >
+              Картинка
+            </button>
           </div>
 
           {form.header_type === 'image' ? (
@@ -127,12 +151,16 @@ export function ModalBuilder() {
                   type="button"
                   className={`${styles.typeBtn} ${imageSource === 'file' ? styles.typeBtnActive : ''}`}
                   onClick={() => setImageSource('file')}
-                >Загрузить файл</button>
+                >
+                  Загрузить файл
+                </button>
                 <button
                   type="button"
                   className={`${styles.typeBtn} ${imageSource === 'url' ? styles.typeBtnActive : ''}`}
                   onClick={() => setImageSource('url')}
-                >Внешний URL</button>
+                >
+                  Внешний URL
+                </button>
               </div>
 
               {imageSource === 'file' ? (
@@ -193,7 +221,9 @@ export function ModalBuilder() {
           <h3 className={styles.sectionTitle}>Контент</h3>
 
           <label className={styles.field}>
-            <span>Заголовок <span className={styles.optional}>необязательно</span></span>
+            <span>
+              Заголовок <span className={styles.optional}>необязательно</span>
+            </span>
             <input
               type="text"
               value={form.body_title}
@@ -229,7 +259,10 @@ export function ModalBuilder() {
           {form.important_enabled && (
             <>
               <label className={styles.field}>
-                <span>Заголовок блока <span className={styles.optional}>необязательно</span></span>
+                <span>
+                  Заголовок блока{' '}
+                  <span className={styles.optional}>необязательно</span>
+                </span>
                 <input
                   type="text"
                   value={form.important_title}
@@ -252,7 +285,14 @@ export function ModalBuilder() {
                       key={key}
                       type="button"
                       className={`${styles.presetBtn} ${form.important_preset === key ? styles.presetBtnActive : ''}`}
-                      style={form.important_preset === key ? { borderColor: preset.border, background: preset.bg } : {}}
+                      style={
+                        form.important_preset === key
+                          ? {
+                              borderColor: preset.border,
+                              background: preset.bg,
+                            }
+                          : {}
+                      }
                       onClick={() => set('important_preset', key)}
                     >
                       {preset.label}
@@ -269,25 +309,43 @@ export function ModalBuilder() {
           <div className={styles.sectionHeader}>
             <h3 className={styles.sectionTitle}>Кнопки</h3>
             {form.buttons.length < MAX_BUTTONS && (
-              <button type="button" className={styles.addBtn} onClick={addButton}>
+              <button
+                type="button"
+                className={styles.addBtn}
+                onClick={addButton}
+              >
                 + Добавить
               </button>
             )}
           </div>
 
           {form.buttons.length === 0 && (
-            <p className={styles.hint}>Кнопки не добавлены — кнопка «Понятно» будет добавлена автоматически.</p>
+            <p className={styles.hint}>
+              Кнопки не добавлены — кнопка «Понятно» будет добавлена
+              автоматически.
+            </p>
           )}
 
           {form.buttons.map((btn, i) => (
             <div key={i} className={styles.buttonCard}>
               <div className={styles.buttonCardHeader}>
                 <span>Кнопка {i + 1}</span>
-                <button type="button" className={styles.removeBtn} onClick={() => removeButton(i)}>✕</button>
+                <button
+                  type="button"
+                  className={styles.removeBtn}
+                  onClick={() => removeButton(i)}
+                >
+                  ✕
+                </button>
               </div>
 
               <label className={styles.field}>
-                <span>Текст <span className={styles.charCount}>{btn.text.length}/{MAX_BUTTON_TEXT}</span></span>
+                <span>
+                  Текст{' '}
+                  <span className={styles.charCount}>
+                    {btn.text.length}/{MAX_BUTTON_TEXT}
+                  </span>
+                </span>
                 <input
                   type="text"
                   value={btn.text}
@@ -313,12 +371,16 @@ export function ModalBuilder() {
                     type="button"
                     className={`${styles.typeBtn} ${btn.style === 'primary' ? styles.typeBtnActive : ''}`}
                     onClick={() => updateButton(i, 'style', 'primary')}
-                  >Заливка</button>
+                  >
+                    Заливка
+                  </button>
                   <button
                     type="button"
                     className={`${styles.typeBtn} ${btn.style === 'outline' ? styles.typeBtnActive : ''}`}
                     onClick={() => updateButton(i, 'style', 'outline')}
-                  >Контур</button>
+                  >
+                    Контур
+                  </button>
                 </div>
               </div>
             </div>
@@ -329,7 +391,12 @@ export function ModalBuilder() {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Настройки</h3>
           <div className={styles.field}>
-            <span>Акцентный цвет <span className={styles.optional}>кнопка «Понятно» и контур кнопок</span></span>
+            <span>
+              Акцентный цвет{' '}
+              <span className={styles.optional}>
+                кнопка «Понятно» и контур кнопок
+              </span>
+            </span>
             <div className={styles.colorPalette}>
               {ACCENT_COLORS.map((c) => (
                 <button
@@ -352,7 +419,9 @@ export function ModalBuilder() {
           </p>
         )}
         {isSuccess && (
-          <p className={styles.successMsg}>✓ Модалка сохранена! Активируй её в списке ниже.</p>
+          <p className={styles.successMsg}>
+            ✓ Модалка сохранена! Активируй её в списке ниже.
+          </p>
         )}
 
         <button type="submit" className={styles.submitBtn} disabled={isLoading}>
@@ -366,5 +435,5 @@ export function ModalBuilder() {
         <ModalPreview config={previewConfig} />
       </div>
     </div>
-  )
+  );
 }

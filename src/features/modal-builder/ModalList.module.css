@@ -54,7 +54,7 @@
 }
 
 .itemActive {
-  border-color: #FE5000;
+  border-color: #fe5000;
   background: #fff8f5;
 }
 
@@ -83,7 +83,7 @@
 .activeBadge {
   font-size: 12px;
   font-weight: 700;
-  color: #FE5000;
+  color: #fe5000;
   white-space: nowrap;
 }
 
@@ -124,9 +124,9 @@
 }
 
 .btnActivate {
-  background: #FE5000;
+  background: #fe5000;
   color: #fff;
-  border-color: #FE5000;
+  border-color: #fe5000;
 }
 
 .btnActivate:hover:not(:disabled) {
@@ -135,8 +135,8 @@
 
 .btnDeactivate {
   background: #fff;
-  color: #FE5000;
-  border-color: #FE5000;
+  color: #fe5000;
+  border-color: #fe5000;
 }
 
 .btnDeactivate:hover:not(:disabled) {
@@ -152,4 +152,22 @@
 .btnDelete:hover:not(:disabled) {
   color: #d32f2f;
   border-color: #d32f2f;
+}
+
+@media (max-width: 700px) {
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .itemActions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
 }

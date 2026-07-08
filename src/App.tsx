@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { UploadForm } from './features/upload/UploadForm';
 import { ModalBuilder } from './features/modal-builder/ModalBuilder';
+import { ModalList } from './features/modal-builder/ModalList';
 import styles from './App.module.css';
 
-type Tab = 'birthday' | 'modal-builder';
+type Tab = 'birthday' | 'modals';
+type ModalSubTab = 'create' | 'list';
 
 export function App() {
   const [tab, setTab] = useState<Tab>('birthday');
+  const [subTab, setSubTab] = useState<ModalSubTab>('create');
 
   return (
     <div className={styles.root}>
@@ -23,16 +26,39 @@ export function App() {
           🎂 День рождения
         </button>
         <button
-          className={`${styles.tab} ${tab === 'modal-builder' ? styles.tabActive : ''}`}
-          onClick={() => setTab('modal-builder')}
+          className={`${styles.tab} ${tab === 'modals' ? styles.tabActive : ''}`}
+          onClick={() => setTab('modals')}
         >
-          🪟 Конструктор модалок
+          🪟 Модальные окна
         </button>
       </nav>
 
       <main className={styles.main}>
         {tab === 'birthday' && <UploadForm />}
-        {tab === 'modal-builder' && <ModalBuilder />}
+
+        {tab === 'modals' && (
+          <div className={styles.modalsPage}>
+            <nav className={styles.subTabs}>
+              <button
+                className={`${styles.subTab} ${subTab === 'create' ? styles.subTabActive : ''}`}
+                onClick={() => setSubTab('create')}
+              >
+                ✏️ Создать
+              </button>
+              <button
+                className={`${styles.subTab} ${subTab === 'list' ? styles.subTabActive : ''}`}
+                onClick={() => setSubTab('list')}
+              >
+                📋 Список модалок
+              </button>
+            </nav>
+
+            {subTab === 'create' && (
+              <ModalBuilder onSaved={() => setSubTab('list')} />
+            )}
+            {subTab === 'list' && <ModalList />}
+          </div>
+        )}
       </main>
     </div>
   );
