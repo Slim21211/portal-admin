@@ -28,21 +28,6 @@ export function UploadForm() {
     setUploadedUrl(null);
   }
 
-  async function handleUpload() {
-    if (!file) return;
-
-    const result = await upload(file);
-
-    if ('data' in result) {
-      // добавляем cache buster чтобы браузер не показывал старую версию
-      const today = new Date().toISOString().split('T')[0];
-      setUploadedUrl(getBirthdayPublicUrl() + '?v=' + today);
-      setFile(null);
-      setPreview(null);
-      if (inputRef.current) inputRef.current.value = '';
-    }
-  }
-
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     const dropped = e.dataTransfer.files[0];
@@ -58,12 +43,27 @@ export function UploadForm() {
     setUploadedUrl(null);
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!file) return;
+
+    const result = await upload(file);
+
+    if ('data' in result) {
+      const today = new Date().toISOString().split('T')[0];
+      setUploadedUrl(getBirthdayPublicUrl() + '?v=' + today);
+      setFile(null);
+      setPreview(null);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  }
+
   return (
-    <div className={styles.card}>
+    <form className={styles.card} onSubmit={handleSubmit} noValidate>
       <h2 className={styles.title}>Картинка с днём рождения сотрудников</h2>
       <p className={styles.subtitle}>
         Загрузи картинку для отображения на&nbsp;портале, название файла должно
-        быть&nbsp;&mdash; daily_birthday
+        быть&nbsp;— daily_birthday
       </p>
 
       <div
@@ -98,8 +98,8 @@ export function UploadForm() {
       )}
 
       <button
+        type="submit"
         className={styles.button}
-        onClick={handleUpload}
         disabled={!file || isLoading}
       >
         {isLoading ? 'Загружаем...' : 'Загрузить на портал'}
@@ -121,6 +121,6 @@ export function UploadForm() {
           />
         </div>
       )}
-    </div>
+    </form>
   );
 }

@@ -101,16 +101,14 @@ export function ModalBuilder({ onSaved }: Props) {
 
   return (
     <div className={styles.root}>
-      {/* ─── ФОРМА ─── */}
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        {/* Название */}
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Название модалки</h3>
           <label className={styles.field}>
             <span>
               Внутреннее название{' '}
               <span className={styles.optional}>
-                только для вас, не показывается пользователям
+                (не показывается пользователям)
               </span>
             </span>
             <input
@@ -165,7 +163,9 @@ export function ModalBuilder({ onSaved }: Props) {
 
               {imageSource === 'file' ? (
                 <label className={styles.field}>
-                  <span>Файл картинки</span>
+                  <span>
+                    Файл картинки (предпочтительный размер - 460×200px)
+                  </span>
                   <input
                     ref={fileRef}
                     type="file"

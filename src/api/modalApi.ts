@@ -92,7 +92,6 @@ export const modalApi = createApi({
             .neq('id', id);
           if (e1) return { error: e1.message };
 
-          // Активируем выбранную
           const { error: e2 } = await supabase
             .from(TABLE)
             .update({ is_active: true })
