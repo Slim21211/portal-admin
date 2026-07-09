@@ -57,8 +57,8 @@ export function BranchAnniversaryForm() {
     <form className={styles.card} onSubmit={handleSubmit} noValidate>
       <h2 className={styles.title}>Годовщина открытия филиалов</h2>
       <p className={styles.subtitle}>
-        Загрузи баннер с поздравлением — он сразу появится на портале и будет
-        показываться до следующей замены
+        Загрузи баннер для отображения на&nbsp;портале, название файла должно
+        быть&nbsp;— branch_anniversary
       </p>
 
       <div
