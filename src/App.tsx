@@ -3,6 +3,7 @@ import { UploadForm } from './features/upload/UploadForm';
 import { ModalBuilder } from './features/modal-builder/ModalBuilder';
 import { ModalList } from './features/modal-builder/ModalList';
 import styles from './App.module.css';
+import { BranchAnniversaryForm } from './features/upload/BranchAnniversaryForm';
 
 type Tab = 'birthday' | 'modals';
 type ModalSubTab = 'create' | 'list';
@@ -34,7 +35,12 @@ export function App() {
       </nav>
 
       <main className={styles.main}>
-        {tab === 'birthday' && <UploadForm />}
+        {tab === 'birthday' && (
+          <div className={styles.birthdayPage}>
+            <UploadForm />
+            <BranchAnniversaryForm />
+          </div>
+        )}
 
         {tab === 'modals' && (
           <div className={styles.modalsPage}>

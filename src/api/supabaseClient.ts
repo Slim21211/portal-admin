@@ -8,6 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const BUCKET = 'portal-assets';
 export const BIRTHDAY_PATH = 'birthday/daily_birthday.png';
 export const MODAL_IMAGES_FOLDER = 'modal-headers';
+export const BRANCH_ANNIVERSARY_PATH = 'birthday/branch_anniversary.png';
 
 export function getBirthdayPublicUrl(): string {
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(BIRTHDAY_PATH);
@@ -16,5 +17,12 @@ export function getBirthdayPublicUrl(): string {
 
 export function getStoragePublicUrl(path: string): string {
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+export function getBranchAnniversaryPublicUrl(): string {
+  const { data } = supabase.storage
+    .from(BUCKET)
+    .getPublicUrl(BRANCH_ANNIVERSARY_PATH);
   return data.publicUrl;
 }
