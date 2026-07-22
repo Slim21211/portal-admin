@@ -1,0 +1,103 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  font-family: inherit;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
+}
+
+.field input {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus {
+  border-color: #fe5000;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.btnCancel {
+  padding: 9px 20px;
+  background: none;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btnSave {
+  padding: 9px 20px;
+  background: #fe5000;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.btnSave:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

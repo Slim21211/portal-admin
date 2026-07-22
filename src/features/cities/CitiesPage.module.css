@@ -1,0 +1,315 @@
+.root {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  max-width: 1100px;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.count {
+  font-size: 12px;
+  font-weight: 600;
+  background: #f0f0f0;
+  color: #777;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.btnPrimary {
+  padding: 8px 16px;
+  background: #fe5000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btnSecondary {
+  padding: 8px 16px;
+  background: #fff;
+  color: #555;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: border-color 0.15s;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  border-color: #fe5000;
+  color: #fe5000;
+}
+.btnSecondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.importResult {
+  font-size: 13px;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.hint {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 16px;
+}
+
+.status {
+  font-size: 14px;
+  color: #888;
+  padding: 24px;
+  text-align: center;
+}
+.statusError {
+  font-size: 14px;
+  color: #d32f2f;
+  padding: 12px;
+}
+
+/* Таблица */
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  background: #f9f9f9;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.thName {
+  width: 160px;
+}
+.thUrl {
+}
+.thPin {
+  width: 40px;
+  text-align: center;
+}
+.thActions {
+  width: 130px;
+}
+
+.row:nth-child(even) {
+  background: #fafafa;
+}
+.row:hover {
+  background: #fff8f5;
+}
+
+.row td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.row:last-child td {
+  border-bottom: none;
+}
+
+.tdName {
+  font-weight: 600;
+  color: #111;
+  white-space: nowrap;
+}
+
+.tdUrl {
+  max-width: 0;
+}
+
+.link {
+  color: #3b5bdb;
+  text-decoration: none;
+  font-size: 12px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.tdPin {
+  text-align: center;
+}
+
+.tdActions {
+  white-space: nowrap;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btnEdit {
+  padding: 5px 12px;
+  background: #fff;
+  color: #555;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.btnEdit:hover {
+  border-color: #fe5000;
+  color: #fe5000;
+}
+
+.btnDelete {
+  padding: 5px 10px;
+  background: none;
+  color: #bbb;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.btnDelete:hover {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .actions {
+    width: 100%;
+  }
+  .link {
+    max-width: 200px;
+  }
+}
+
+/* Карточки для мобилки */
+.cardList {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+}
+
+.cardPin {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.cardUrl {
+  font-size: 12px;
+  color: #3b5bdb;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.cardUrl:hover {
+  text-decoration: underline;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cardActions .btnEdit,
+.cardActions .btnDelete {
+  flex: 1;
+  text-align: center;
+}
+
+/* Переключение таблица/карточки */
+@media (max-width: 640px) {
+  .tableWrap {
+    display: none;
+  }
+  .cardList {
+    display: flex;
+  }
+}

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { UploadForm } from './features/upload/UploadForm';
 import { ModalBuilder } from './features/modal-builder/ModalBuilder';
 import { ModalList } from './features/modal-builder/ModalList';
-import styles from './App.module.css';
+import { CitiesPage } from './features/cities/CitiesPage';
 import { BranchAnniversaryForm } from './features/upload/BranchAnniversaryForm';
 
-type Tab = 'birthday' | 'modals';
+import styles from './App.module.css';
+
+type Tab = 'birthday' | 'modals' | 'cities';
 type ModalSubTab = 'create' | 'list';
 
 export function App() {
@@ -31,6 +33,12 @@ export function App() {
           onClick={() => setTab('modals')}
         >
           🪟 Модальные окна
+        </button>
+        <button
+          className={`${styles.tab} ${tab === 'cities' ? styles.tabActive : ''}`}
+          onClick={() => setTab('cities')}
+        >
+          🗺️ Города
         </button>
       </nav>
 
@@ -58,13 +66,14 @@ export function App() {
                 📋 Список модалок
               </button>
             </nav>
-
             {subTab === 'create' && (
               <ModalBuilder onSaved={() => setSubTab('list')} />
             )}
             {subTab === 'list' && <ModalList />}
           </div>
         )}
+
+        {tab === 'cities' && <CitiesPage />}
       </main>
     </div>
   );
