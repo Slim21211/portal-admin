@@ -123,7 +123,7 @@ export function CitiesPage() {
                 <td className={styles.tdName}>{city.name}</td>
                 <td className={styles.tdUrl}>
                   <a
-                    href={city.url}
+                    href={city.url ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.link}
@@ -160,7 +160,7 @@ export function CitiesPage() {
               {city.is_pinned && <span className={styles.cardPin}>📍</span>}
             </div>
             <a
-              href={city.url}
+              href={city.url ?? undefined}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.cardUrl}
