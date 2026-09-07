@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useUploadBirthdayImageMutation } from '../../api/uploadApi';
-import { getBirthdayPublicUrl } from '../../api/supabaseClient';
+import { getBirthdayPublicUrl } from '../../api/uploadApi';
 import styles from './UploadForm.module.css';
 
 const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg'];

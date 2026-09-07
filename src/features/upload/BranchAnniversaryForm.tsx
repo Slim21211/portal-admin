@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useUploadBranchAnniversaryImageMutation } from '../../api/uploadApi';
-import { getBranchAnniversaryPublicUrl } from '../../api/supabaseClient';
+import { getBranchAnniversaryPublicUrl } from '../../api/uploadApi';
 import styles from './UploadForm.module.css';
 
 const ACCEPTED = ['image/png', 'image/jpeg', 'image/jpg'];
