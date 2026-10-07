@@ -26,6 +26,11 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_GITHUB_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
+          VITE_GITHUB_OWNER: Slim21211
+          VITE_GITHUB_REPO: cse-portal-assets
           VITE_GITHUB_PAGES_URL: https://assets.cse-hr.ru
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -39,11 +44,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_GITHUB_TOKEN: ${{ secrets.GH_ASSETS_TOKEN }}
-          VITE_GITHUB_OWNER: Slim21211
-          VITE_GITHUB_REPO: cse-portal-assets
-          VITE_GITHUB_PAGES_URL: https://assets.cse-hr.ru
+      - id: deployment
+        uses: actions/deploy-pages@v4
