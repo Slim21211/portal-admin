@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 import { supabase } from './supabaseClient'
-import { githubPutText } from './githubClient'
+import { publishJson } from './assetsClient'
 
 export interface City {
   id: string
@@ -20,10 +20,18 @@ export interface CityInput {
 
 const TABLE = 'cities'
 
-async function syncCitiesToGitHub(): Promise<void> {
-  const { data } = await supabase.from(TABLE).select('*')
-  if (!data) return
-  await githubPutText('cities.json', JSON.stringify(data), 'sync cities')
+function errorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : String(e)
+}
+
+// cities.json собирается из БД на стороне Edge Function; возвращает текст ошибки или null
+async function syncCitiesToGitHub(): Promise<string | null> {
+  try {
+    await publishJson('cities', 'sync cities')
+    return null
+  } catch (e) {
+    return `Сохранено в БД, но не опубликовано: ${errorMessage(e)}`
+  }
 }
 
 export const citiesApi = createApi({
@@ -44,7 +52,8 @@ export const citiesApi = createApi({
       queryFn: async (input) => {
         const { data, error } = await supabase.from(TABLE).insert(input).select().single()
         if (error) return { error: error.message }
-        await syncCitiesToGitHub()
+        const syncError = await syncCitiesToGitHub()
+        if (syncError) return { error: syncError }
         return { data: data as City }
       },
       invalidatesTags: ['City'],
@@ -53,7 +62,8 @@ export const citiesApi = createApi({
       queryFn: async ({ id, ...input }) => {
         const { data, error } = await supabase.from(TABLE).update(input).eq('id', id).select().single()
         if (error) return { error: error.message }
-        await syncCitiesToGitHub()
+        const syncError = await syncCitiesToGitHub()
+        if (syncError) return { error: syncError }
         return { data: data as City }
       },
       invalidatesTags: ['City'],
@@ -62,34 +72,34 @@ export const citiesApi = createApi({
       queryFn: async (id) => {
         const { error } = await supabase.from(TABLE).delete().eq('id', id)
         if (error) return { error: error.message }
-        await syncCitiesToGitHub()
+        const syncError = await syncCitiesToGitHub()
+        if (syncError) return { error: syncError }
         return { data: undefined }
       },
       invalidatesTags: ['City'],
     }),
     importCities: builder.mutation<{ added: number; updated: number }, CityInput[]>({
       queryFn: async (rows) => {
-        const { data: existing, error: fetchError } = await supabase.from(TABLE).select('id, name')
+        const { data: existing, error: fetchError } = await supabase.from(TABLE).select('*')
         if (fetchError) return { error: fetchError.message }
-        const existingMap = new Map(
-          (existing as { id: string; name: string }[]).map((c) => [c.name.toLowerCase(), c.id])
-        )
+        const existingMap = new Map((existing as City[]).map((c) => [c.name.toLowerCase(), c]))
         const toInsert: CityInput[] = []
-        const toUpdate: { id: string; url: string | null }[] = []
+        const toUpdate: City[] = []
         for (const row of rows) {
-          const existingId = existingMap.get(row.name.toLowerCase())
-          if (existingId) toUpdate.push({ id: existingId, url: row.url })
+          const current = existingMap.get(row.name.toLowerCase())
+          if (current) toUpdate.push({ ...current, url: row.url })
           else toInsert.push(row)
         }
         if (toInsert.length > 0) {
           const { error } = await supabase.from(TABLE).insert(toInsert)
           if (error) return { error: error.message }
         }
-        for (const { id, url } of toUpdate) {
-          const { error } = await supabase.from(TABLE).update({ url }).eq('id', id)
+        if (toUpdate.length > 0) {
+          const { error } = await supabase.from(TABLE).upsert(toUpdate)
           if (error) return { error: error.message }
         }
-        await syncCitiesToGitHub()
+        const syncError = await syncCitiesToGitHub()
+        if (syncError) return { error: syncError }
         return { data: { added: toInsert.length, updated: toUpdate.length } }
       },
       invalidatesTags: ['City'],
@@ -107,19 +117,16 @@ export const citiesApi = createApi({
             if (childError) return { error: childError.message }
           }
         }
-        await syncCitiesToGitHub()
+        const syncError = await syncCitiesToGitHub()
+        if (syncError) return { error: syncError }
         return { data: parentData as City }
       },
       invalidatesTags: ['City'],
     }),
     syncToGitHub: builder.mutation<void, void>({
       queryFn: async () => {
-        try {
-          await syncCitiesToGitHub()
-          return { data: undefined }
-        } catch (e: any) {
-          return { error: e.message }
-        }
+        const syncError = await syncCitiesToGitHub()
+        return syncError ? { error: syncError } : { data: undefined }
       },
     }),
   }),

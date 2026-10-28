@@ -1,5 +1,5 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-import { githubPutBinary, githubPutText, GITHUB_PAGES_URL } from './githubClient'
+import { assetUrl, commitAssets, fileToAsset } from './assetsClient'
 
 const BIRTHDAY_PATH = 'birthday/daily_birthday.png'
 const BIRTHDAY_META = 'birthday/daily-birthday-meta.json'
@@ -12,11 +12,16 @@ export const uploadApi = createApi({
     uploadBirthdayImage: builder.mutation<string, File>({
       queryFn: async (file) => {
         try {
-          const url = await githubPutBinary(BIRTHDAY_PATH, file, 'update daily birthday image')
           // Пишем дату загрузки (МСК) — по ней портал решает, актуальна ли картинка
           const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Moscow' }) // YYYY-MM-DD
-          await githubPutText(BIRTHDAY_META, JSON.stringify({ date: today }), 'update birthday meta')
-          return { data: url }
+          await commitAssets({
+            message: 'update daily birthday image',
+            files: [
+              await fileToAsset(BIRTHDAY_PATH, file),
+              { path: BIRTHDAY_META, content: JSON.stringify({ date: today }), encoding: 'utf-8' },
+            ],
+          })
+          return { data: assetUrl(BIRTHDAY_PATH) }
         } catch (e: any) {
           return { error: e.message }
         }
@@ -25,8 +30,11 @@ export const uploadApi = createApi({
     uploadBranchAnniversaryImage: builder.mutation<string, File>({
       queryFn: async (file) => {
         try {
-          const url = await githubPutBinary(BRANCH_ANNIVERSARY_PATH, file, 'update branch anniversary image')
-          return { data: url }
+          await commitAssets({
+            message: 'update branch anniversary image',
+            files: [await fileToAsset(BRANCH_ANNIVERSARY_PATH, file)],
+          })
+          return { data: assetUrl(BRANCH_ANNIVERSARY_PATH) }
         } catch (e: any) {
           return { error: e.message }
         }
@@ -36,11 +44,11 @@ export const uploadApi = createApi({
 })
 
 export function getBirthdayPublicUrl(): string {
-  return `${GITHUB_PAGES_URL}/${BIRTHDAY_PATH}`
+  return assetUrl(BIRTHDAY_PATH)
 }
 
 export function getBranchAnniversaryPublicUrl(): string {
-  return `${GITHUB_PAGES_URL}/${BRANCH_ANNIVERSARY_PATH}`
+  return assetUrl(BRANCH_ANNIVERSARY_PATH)
 }
 
 export const {

@@ -1,13 +1,22 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
 import { supabase, MODAL_IMAGES_FOLDER } from './supabaseClient'
-import { githubPutText, githubPutBinary } from './githubClient'
+import { assetUrl, commitAssets, fileToAsset, publishJson } from './assetsClient'
 import { Modal, ModalFormData } from '../features/modal-builder/types'
 
 const TABLE = 'modals'
-const ACTIVE_MODAL_FILE = 'active-modal.json'
 
-async function writeActiveModal(modal: Modal | null): Promise<void> {
-  await githubPutText(ACTIVE_MODAL_FILE, JSON.stringify(modal ?? {}), 'update active modal')
+function errorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : String(e)
+}
+
+// active-modal.json собирается из БД на стороне Edge Function; возвращает текст ошибки или null
+async function publishActiveModal(): Promise<string | null> {
+  try {
+    await publishJson('active-modal', 'update active modal')
+    return null
+  } catch (e) {
+    return `Сохранено в БД, но не опубликовано: ${errorMessage(e)}`
+  }
 }
 
 export const modalApi = createApi({
@@ -28,9 +37,17 @@ export const modalApi = createApi({
         let header_image_url: string | null = null
         if (formData.header_type === 'image') {
           if (formData.header_image_file) {
-            const ext = formData.header_image_file.name.split('.').pop()
+            const ext = formData.header_image_file.name.split('.').pop()?.toLowerCase()
             const path = `${MODAL_IMAGES_FOLDER}/${Date.now()}.${ext}`
-            header_image_url = await githubPutBinary(path, formData.header_image_file, 'upload modal image')
+            try {
+              await commitAssets({
+                message: 'upload modal image',
+                files: [await fileToAsset(path, formData.header_image_file)],
+              })
+            } catch (e) {
+              return { error: errorMessage(e) }
+            }
+            header_image_url = assetUrl(path)
           } else if (formData.header_image_url) {
             header_image_url = formData.header_image_url
           }
@@ -45,28 +62,21 @@ export const modalApi = createApi({
     }),
     setActiveModal: builder.mutation<void, string | null>({
       queryFn: async (id) => {
-        if (id) {
-          const { error: e1 } = await supabase.from(TABLE).update({ is_active: false }).neq('id', id)
-          if (e1) return { error: e1.message }
-          const { error: e2 } = await supabase.from(TABLE).update({ is_active: true }).eq('id', id)
-          if (e2) return { error: e2.message }
-          const { data: modal, error: e3 } = await supabase.from(TABLE).select('*').eq('id', id).single()
-          if (e3) return { error: e3.message }
-          await writeActiveModal(modal as Modal)
-        } else {
-          const { error: e1 } = await supabase.from(TABLE).update({ is_active: false }).not('id', 'is', null)
-          if (e1) return { error: e1.message }
-          await writeActiveModal(null)
-        }
-        return { data: undefined }
+        const { error } = await supabase.rpc('set_active_modal', { p_id: id })
+        if (error) return { error: error.message }
+        const publishError = await publishActiveModal()
+        return publishError ? { error: publishError } : { data: undefined }
       },
       invalidatesTags: ['Modal'],
     }),
     deleteModal: builder.mutation<void, Modal>({
       queryFn: async (modal) => {
-        if (modal.is_active) await writeActiveModal(null)
         const { error } = await supabase.from(TABLE).delete().eq('id', modal.id)
         if (error) return { error: error.message }
+        if (modal.is_active) {
+          const publishError = await publishActiveModal()
+          if (publishError) return { error: publishError }
+        }
         return { data: undefined }
       },
       invalidatesTags: ['Modal'],

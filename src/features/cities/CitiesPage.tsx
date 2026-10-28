@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import * as XLSX from 'xlsx';
 import {
   useListCitiesQuery,
   useDeleteCityMutation,
@@ -31,7 +30,8 @@ export function CitiesPage() {
     if (!file) return;
     e.target.value = '';
 
-    const buffer = await file.arrayBuffer();
+    // xlsx тяжёлый — грузим только при импорте
+    const [XLSX, buffer] = await Promise.all([import('xlsx'), file.arrayBuffer()]);
     const wb = XLSX.read(buffer);
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json<Record<string, string>>(ws);
